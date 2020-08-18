@@ -30,6 +30,17 @@ I used `jdk1.8.0_261` along with its JRE to compile and work through all the pro
 
 ## Demo of Sample Java Applets built
 
+### 2D Sun Changing color based on time of day
+
+![](https://github.com/chakrakan/quake-detect/blob/master/demo_imgs/sun_changing_color.PNG)
+
+### WorldMap with life expectancy using WorldBankOpenData
+
+![](https://github.com/chakrakan/quake-detect/blob/master/demo_imgs/life_expectancy.PNG)
+
+### Live Earthquake data using USGS earthquake data
+
+![](https://github.com/chakrakan/quake-detect/blob/master/demo_imgs/earthquake_with_key.PNG)
 
 
 
