@@ -56,8 +56,8 @@ public class EarthquakeCityMapDemo extends PApplet {
 		size(950, 600, OPENGL);
 
 		// Assume online
-		map = new UnfoldingMap(this, 200, 50, 700, 500, new Google.GoogleMapProvider());
-//		map = new UnfoldingMap(this, 200, 50, 700, 500, new OpenStreetMap.OpenStreetMapProvider() );
+//		map = new UnfoldingMap(this, 200, 50, 700, 500, new Google.GoogleMapProvider());
+		map = new UnfoldingMap(this, 200, 50, 700, 500, new OpenStreetMap.OpenStreetMapProvider() );
 //	    map = new UnfoldingMap(this, 200, 50, 650, 600, new MBTilesMapProvider(mbTilesString));
 
 	    map.zoomToLevel(1);
@@ -71,21 +71,21 @@ public class EarthquakeCityMapDemo extends PApplet {
 	    //STAGE 1: Markers (not associated with Features)
 	    
 	    // Create a marker at a specific location in the world, and format it
-//	    Location valLoc = new Location(-38.14f,-73.03f);
-//	    Marker val = new SimplePointMarker(valLoc);
-//	    map.addMarker(val);
+	    Location valLoc = new Location(-38.14f,-73.03f);
+	    Marker val = new SimplePointMarker(valLoc);
+	    map.addMarker(val);
 	    
 	    //STAGE 2: Features with rich data, then Marker
 	    
 	    // First create Feature for details of Valdivia earthquake
-//	    Location valLoc = new Location(-38.14f,-73.03f);
-//	    PointFeature valEq = new PointFeature(valLoc);
-//	    valEq.addProperty("title", "Valdivia, Chile");
-//	    valEq.addProperty("magnitude", "9.5");
-//	    valEq.addProperty("date", "May 22, 1960");
-//	    
-//	    Marker valMk = new SimplePointMarker(valLoc, valEq.getProperties());
-//	    map.addMarker(valMk);
+	    Location valLoc1 = new Location(-38.14f,-73.03f);
+	    PointFeature valEq = new PointFeature(valLoc1);
+	    valEq.addProperty("title", "Valdivia, Chile");
+	    valEq.addProperty("magnitude", "9.5");
+	    valEq.addProperty("date", "May 22, 1960");
+	    
+	    Marker valMk = new SimplePointMarker(valLoc1, valEq.getProperties());
+	    map.addMarker(valMk);
 	    
 	   //STAGE 3: List of Features, then list of Markers (ADTs)
 	   // cf. http://earthquake.usgs.gov/earthquakes/world/10_largest_world.php
@@ -154,24 +154,23 @@ public class EarthquakeCityMapDemo extends PApplet {
 	    }
 //	    
 	    
-	    //List<Marker> markers = new ArrayList<Marker>();
+//	    List<Marker> markers = new ArrayList<Marker>();
 	    
 	    // The List you will populate with new SimplePointMarkers
-	    //List<Marker> markers = new ArrayList<Marker>();
+//	    List<Marker> markers = new ArrayList<Marker>();
 
 	    //Use provided parser to collect properties for each earthquake
 	    //PointFeatures have a getLocation method
-	    //List<PointFeature> earthquakes = ParseFeed.parseEarthquake(this, earthquakesURL);
+//	    List<PointFeature> earthquakes = ParseFeed.parseEarthquake(this, earthquakesURL);
 	    
 	    // These print statements show you (1) all of the relevant properties 
 	    // in the features, and (2) how to get one property and use it
-	    //if (earthquakes.size() > 0) {
-	    //	PointFeature f = earthquakes.get(0);
-	    //	System.out.println(f.getProperties());
-	    //	Object magObj = f.getProperty("magnitude");
-	    //	float mag = Float.parseFloat(magObj.toString());
-	    	// PointFeatures also have a getLocation method
-	    //}
+//	    if (earthquakes.size() > 0) {
+//	    	PointFeature f = earthquakes.get(0);
+//	    	System.out.println(f.getProperties());
+//	    	Object magObj = f.getProperty("magnitude");
+//	    	float mag = Float.parseFloat(magObj.toString());
+//	    }
 	    
 
 

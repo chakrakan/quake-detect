@@ -1,27 +1,17 @@
-unfolding_app_template and UC San Diego/Coursera MOOC starter code
-==================================================================
+# UC San Diego/Coursera MOOC starter code
 
 This is a skeleton to use Unfolding in Eclipse as well as some starter
 code for the Object Oriented Programming in Java course offered by 
 UC San Diego through Coursera.
 
-A very basic Unfolding demo you'll find in the source folder in the default package. 
-For more examples visit http://unfoldingmaps.org, or download the template with
-examples.
 
-The module folders contain the starter code for the programming assignments
-associated with the MOOC.
-
-Get excited and make things!
-
-
-INSTALLATION
+## INSTALLATION
 
 Import this folder in Eclipse ('File' -> 'Import' -> 'Existing Projects into
 Workspace', Select this folder, 'Finish')
 
 
-MANUAL INSTALLATION
+## MANUAL INSTALLATION
 
 If the import does not work follow the steps below.
 
@@ -32,9 +22,13 @@ If the import does not work follow the steps below.
 - Add data/ as src
 
 
-TROUBLE SHOOTING
+## TROUBLE SHOOTING
 
-Switch Java Compiler to 1.6 if you get VM problems. (Processing should work with Java 1.6, and 1.7)
+Switch Java Compiler to 1.8 if you get VM problems. (Processing should work with Java 1.6, 1.7 and 1.8)
+
+I used `jdk1.8.0_261` along with its JRE to compile and work through all the projects and assignments.
+
+## Demo of Sample Java Applets built
 
 
 

@@ -24,10 +24,12 @@ public class MyPApplet extends PApplet{
 	
 	public void draw() {
 		//Add drawing code for MyPApplet
+		// height is from PApplet which we defined within setup
 		img.resize(0, height);			//resize loaded image to full height of canvas
 		image(img, 0, 0);			//display image 
 		int[] color = sunColorSec(second());		//calculate color code for sun
 		fill(color[0],color[1],color[2]);	//set sun color
+		// first two are the x and y params of the position, last two params are the width and height of the ellipse
 		ellipse(width/4,height/5,width/4,height/5);	//draw sun
 		
 	}
