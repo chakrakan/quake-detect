@@ -12,8 +12,8 @@ import de.fhpotsdam.unfolding.utils.MapUtils;
 /** HelloWorld
   * An application with two maps side-by-side zoomed in on different locations.
   * Author: UC San Diego Coursera Intermediate Programming team
-  * @author Your name here
-  * Date: July 17, 2015
+  * @author Kanisk Chakraborty
+  * Date: August 18, 2020
   * */
 public class HelloWorld extends PApplet
 {
