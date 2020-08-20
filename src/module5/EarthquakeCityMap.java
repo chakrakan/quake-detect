@@ -8,11 +8,13 @@ import de.fhpotsdam.unfolding.data.Feature;
 import de.fhpotsdam.unfolding.data.GeoJSONReader;
 import de.fhpotsdam.unfolding.data.PointFeature;
 import de.fhpotsdam.unfolding.geo.Location;
+import de.fhpotsdam.unfolding.marker.AbstractMarker;
 import de.fhpotsdam.unfolding.marker.AbstractShapeMarker;
 import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.marker.MultiMarker;
 import de.fhpotsdam.unfolding.providers.Google;
 import de.fhpotsdam.unfolding.providers.MBTilesMapProvider;
+import de.fhpotsdam.unfolding.providers.Microsoft;
 import de.fhpotsdam.unfolding.utils.MapUtils;
 import parsing.ParseFeed;
 import processing.core.PApplet;
@@ -20,8 +22,8 @@ import processing.core.PApplet;
 /** EarthquakeCityMap
  * An application with an interactive map displaying earthquake data.
  * Author: UC San Diego Intermediate Software Development MOOC team
- * @author Your name here
- * Date: July 17, 2015
+ * @author Kanisk Chakraborty
+ * Date: August 19, 2020
  * */
 public class EarthquakeCityMap extends PApplet {
 	
@@ -70,7 +72,8 @@ public class EarthquakeCityMap extends PApplet {
 		    earthquakesURL = "2.5_week.atom";  // The same feed, but saved August 7, 2015
 		}
 		else {
-			map = new UnfoldingMap(this, 200, 50, 650, 600, new Google.GoogleMapProvider());
+//			map = new UnfoldingMap(this, 200, 50, 650, 600, new Google.GoogleMapProvider());
+			map = new UnfoldingMap(this, 200, 50, 650, 600, new Microsoft.AerialProvider());
 			// IF YOU WANT TO TEST WITH A LOCAL FILE, uncomment the next line
 		    //earthquakesURL = "2.5_week.atom";
 		}
@@ -145,7 +148,14 @@ public class EarthquakeCityMap extends PApplet {
 	// 
 	private void selectMarkerIfHover(List<Marker> markers)
 	{
-		// TODO: Implement this method
+		if (lastSelected != null) return;
+		for (Marker m : markers) {
+			if (m.isInside(map,  mouseX, mouseY) && lastSelected == null) {
+				lastSelected = (CommonMarker)m;
+				m.setSelected(true);
+				break;
+			}
+		}
 	}
 	
 	/** The event handler for mouse clicks
@@ -159,6 +169,68 @@ public class EarthquakeCityMap extends PApplet {
 		// TODO: Implement this method
 		// Hint: You probably want a helper method or two to keep this code
 		// from getting too long/disorganized
+		if (lastClicked != null) {
+			unhideMarkers();
+			lastClicked = null;
+		} else {
+			checkQuakesForClick();
+			if (lastClicked == null) {
+				checkCitiesForClick();
+			}
+		}		
+	}
+	
+	// helper methods
+	private void checkCitiesForClick() {
+		if  (lastClicked != null) return;
+		for (Marker m : cityMarkers) {
+			if (!m.isHidden() && m.isInside(map, mouseX, mouseY) && lastClicked == null) {
+				lastClicked = (CommonMarker)m;
+				
+				// hide all other markers
+				// cityMarkers
+				for (Marker h : cityMarkers) {
+					if ((CommonMarker)h != lastClicked) {
+						h.setHidden(true);
+					}
+				}
+				
+				// quake markers but unless the quake is near to the city affected AND clicked
+				for (Marker q : quakeMarkers) {
+					// cast to access the threat radius for a quake
+					EarthquakeMarker qm = (EarthquakeMarker)q;
+					// get distance from quake to city, if greater than threat circle hide
+					if (qm.getDistanceTo(m.getLocation()) > qm.threatCircle()) {
+						qm.setHidden(true);
+					}
+				}
+				break;
+			}			
+		}
+	}
+	
+	private void checkQuakesForClick() {
+		if (lastClicked != null) return;
+		for (Marker m : quakeMarkers) {
+			EarthquakeMarker qm = (EarthquakeMarker)m;
+			if (!qm.isHidden() && qm.isInside(map, mouseX, mouseY)) {
+				lastClicked = qm;
+				
+				// hide other ones again
+				for (Marker cm : cityMarkers) {
+					if (cm.getDistanceTo(qm.getLocation()) > qm.threatCircle()) {
+						cm.setHidden(true);
+					}
+				}
+				
+				for (Marker qmr : quakeMarkers) {
+					if (lastClicked != (CommonMarker)qmr) {
+						qmr.setHidden(true);
+					}
+				}
+				break;
+			}
+		}
 	}
 	
 	
