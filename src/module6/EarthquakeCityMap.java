@@ -2,6 +2,7 @@ package module6;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import de.fhpotsdam.unfolding.UnfoldingMap;
@@ -66,16 +67,21 @@ public class EarthquakeCityMap extends PApplet {
 	private CommonMarker lastSelected;
 	private CommonMarker lastClicked;
 	
+	// Extension variables
+	private int nearbyQuakes = 0;
+	private double avgMag = 0.0;
+	private double recentQuakes = 0;
+	
 	public void setup() {		
 		// (1) Initializing canvas and map tiles
-		size(900, 700, OPENGL);
+		size(1100, 900, OPENGL);
 		if (offline) {
 		    map = new UnfoldingMap(this, 200, 50, 650, 600, new MBTilesMapProvider(mbTilesString));
 		    earthquakesURL = "2.5_week.atom";  // The same feed, but saved August 7, 2015
 		}
 		else {
 //			map = new UnfoldingMap(this, 200, 50, 650, 600, new Google.GoogleMapProvider());
-			map = new UnfoldingMap(this, 200, 50, 650, 600, new Microsoft.AerialProvider());
+			map = new UnfoldingMap(this, 300, 50, 800, 600, new Microsoft.AerialProvider());
 			// IF YOU WANT TO TEST WITH A LOCAL FILE, uncomment the next line
 		    //earthquakesURL = "2.5_week.atom";
 		}
@@ -84,10 +90,10 @@ public class EarthquakeCityMap extends PApplet {
 		// FOR TESTING: Set earthquakesURL to be one of the testing files by uncommenting
 		// one of the lines below.  This will work whether you are online or offline
 		//earthquakesURL = "test1.atom";
-		//earthquakesURL = "test2.atom";
+//		earthquakesURL = "test2.atom";
 		
 		// Uncomment this line to take the quiz
-		//earthquakesURL = "quiz2.atom";
+//		earthquakesURL = "quiz2.atom";
 		
 		
 		// (2) Reading in earthquake data and geometric properties
@@ -119,6 +125,13 @@ public class EarthquakeCityMap extends PApplet {
 
 	    // could be used for debugging
 	    printQuakes();
+	    System.out.println("Test 2 a) ############");
+	    // test 2
+	    sortAndPrint(5);
+	    
+	    System.out.println("Test 2 b) ############");
+	    // test 2 b)
+	    sortAndPrint(20);
 	 		
 	    // (3) Add markers to map
 	    //     NOTE: Country markers are not added to the map.  They are used
@@ -134,6 +147,9 @@ public class EarthquakeCityMap extends PApplet {
 		background(0);
 		map.draw();
 		addKey();
+		if(lastClicked != null && lastClicked instanceof CityMarker ) {
+			cityInfoPopUp((CityMarker) lastClicked);
+		}
 		
 	}
 	
@@ -141,6 +157,59 @@ public class EarthquakeCityMap extends PApplet {
 	// TODO: Add the method:
 	//   private void sortAndPrint(int numToPrint)
 	// and then call that method from setUp
+	private void sortAndPrint(int numToPrint) {
+		// create array list of quakes
+		// .toArray() returns a Object[], we need to typecast it 		
+		EarthquakeMarker[] quakeList = new EarthquakeMarker[quakeMarkers.size()];
+		quakeList = quakeMarkers.toArray(quakeList);		
+		// sort 
+		Arrays.sort(quakeList);
+		
+		// constraints
+		if (numToPrint > quakeList.length) numToPrint = quakeList.length;
+		for (int i = 0;i<numToPrint;i++) {
+			System.out.println(quakeList[i].toString());
+		}
+	}
+	
+	// Extension: Pop up for cities clicked for near by quakes
+	private void cityInfoPopUp(CityMarker clickedCity) {
+		// draw the popup info
+		// the global private variables should be populated with info at this point
+		pushStyle();
+
+		fill(255, 250, 240);
+
+		int rectWidth = 200;
+		int rectHeight;
+		int xbase = 20;
+		int ybase = 350;
+		String message;
+		rectHeight = 150;
+		
+		rect(xbase, ybase, rectWidth, rectHeight);
+		fill(0);
+		textSize(14);
+		message = "City Statistics";
+		text(message, xbase+30, ybase+25);
+
+		message = "City: " + clickedCity.getStringProperty("name");
+		text(message, xbase+22, ybase+50);
+
+		message = "Country: " + clickedCity.getStringProperty("country");
+		text(message, xbase+22, ybase+65);
+
+		message = "Nearby Quakes: " + ((nearbyQuakes != 0) ? nearbyQuakes : "None");
+		text(message, xbase+22, ybase+90);
+
+		avgMag = Math.round(avgMag * 100.0)/100.0;
+		message = "Avg Magnitue: " + ((avgMag != 0.0) ? avgMag : "N/A");
+		text(message, xbase+22, ybase+105);
+
+		message = "Recent Quakes: " + ((recentQuakes != 0) ? recentQuakes : "None");
+		text(message, xbase+22, ybase+120);		
+	}
+
 	
 	/** Event handler that gets called automatically when the 
 	 * mouse moves.
@@ -203,6 +272,13 @@ public class EarthquakeCityMap extends PApplet {
 	// and respond appropriately
 	private void checkCitiesForClick()
 	{
+		// reset variables for every new click
+		nearbyQuakes = 0;
+		avgMag = 0.0;
+		recentQuakes = 0;
+		
+		double sumOfMag = 0.0;
+		
 		if (lastClicked != null) return;
 		// Loop over the earthquake markers to see if one of them is selected
 		for (Marker marker : cityMarkers) {
@@ -219,8 +295,15 @@ public class EarthquakeCityMap extends PApplet {
 					if (quakeMarker.getDistanceTo(marker.getLocation()) 
 							> quakeMarker.threatCircle()) {
 						quakeMarker.setHidden(true);
+					} else {
+						nearbyQuakes++;
+						sumOfMag += quakeMarker.getMagnitude();
+						if ("Past Hour".equals(quakeMarker.getStringProperty("age")) || "Past Day".equals(quakeMarker.getStringProperty("age"))) {
+							recentQuakes++;
+						}
 					}
 				}
+				avgMag = sumOfMag / (double)nearbyQuakes;
 				return;
 			}
 		}		
